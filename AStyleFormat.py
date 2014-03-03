@@ -122,10 +122,8 @@ class AstyleformatCommand(sublime_plugin.TextCommand):
         # Expand environment variables first
         if path.startswith('./'):
              project_file_path = self.view.window().project_file_name()
-             print(project_file_path)
              project_dir_path = os.path.dirname(project_file_path)
-             path = project_dir_path + path[2:]
-             print(path)
+             path = project_dir_path + path[1:]
 
         fullpath = os.path.expandvars(path)
         if not os.path.exists(fullpath) or not os.path.isfile(fullpath):
