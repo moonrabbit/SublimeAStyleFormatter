@@ -119,12 +119,14 @@ class AstyleformatCommand(sublime_plugin.TextCommand):
         return options_default
 
     def read_astylerc(self, path):
-        # Expand environment variables first
+        # moonrabbit_fix: astylerc in project 
         if path.startswith('./'):
              project_file_path = self.view.window().project_file_name()
              project_dir_path = os.path.dirname(project_file_path)
              path = project_dir_path + path[1:]
+        # moonrabbit_fix_end
 
+        # Expand environment variables first
         fullpath = os.path.expandvars(path)
         if not os.path.exists(fullpath) or not os.path.isfile(fullpath):
             return ''
@@ -134,7 +136,15 @@ class AstyleformatCommand(sublime_plugin.TextCommand):
             with open(fullpath, 'r') as f:
                 for line in f:
                     if not skip_comment.match(line):
-                        lines.append(line.strip())
+                        line = line.strip()
+
+                        # moonrabbit_fix: pyastyle is not supported lineend
+                        if line.startswith('--lineend') or line in ('-z1', '-z2', '-z3'):
+                            pass
+                        else:
+                            lines.append(line.strip())
+                        # moonrabbit_fix_end
+
             return ' '.join(lines)
         except:
             return ''
